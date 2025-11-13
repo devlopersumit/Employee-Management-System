@@ -17,10 +17,10 @@ const userSchema = mongoose.Schema({
     type:String,
     // validate: [isStrongPassword, 'Please Enter strong password']
   },
-  roel:{
+  role:{
     type:String,
-    enum: ['admin', 'manager', 'employee'],
-    default:'employee'
+    enum: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
+    default:'ADMIN'
   },
 }, {
  timestamps: true
