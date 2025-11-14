@@ -1,5 +1,5 @@
 const express = require('express');
-const { addUser, getUsers, updateUser, deleteUser } = require('../controller/userController');
+const { addUser, getUsers, updateUser, deleteUser, getUserById } = require('../controller/userController');
 const adminAuth = require('../middleware/adminMiddleware');
 
 const userRouter = express.Router();
@@ -8,7 +8,10 @@ const userRouter = express.Router();
 userRouter.post('/',adminAuth, addUser);
 
 //Get Users
-userRouter.get('/', adminAuth, getUsers);
+userRouter.get('/', getUsers);
+
+//Get user by Id
+userRouter.get('/:id', getUserById);
 
 //Update User
 userRouter.put('/:id', adminAuth, updateUser);

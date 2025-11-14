@@ -1,5 +1,5 @@
 const express = require('express');
-const { createDepartment, getDepartment, updateDepartment, deleteDepartment } = require('../controller/departmentController');
+const { createDepartment, getDepartment, updateDepartment, deleteDepartment, getDepartmentById } = require('../controller/departmentController');
 const adminAuth = require('../middleware/adminMiddleware');
 
 const departmentRouter = express.Router();
@@ -8,7 +8,10 @@ const departmentRouter = express.Router();
 departmentRouter.post('/', adminAuth, createDepartment);
 
 //Get Department Details
-departmentRouter.get('/', adminAuth, getDepartment);
+departmentRouter.get('/', getDepartment);
+
+//Get Department by Id
+departmentRouter.get('/:id', getDepartmentById);
 
 //Update Department Details
 departmentRouter.put('/:id',adminAuth, updateDepartment);

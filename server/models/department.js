@@ -12,7 +12,8 @@ const departmentSchema = new mongoose.Schema({
         unique: true
     },
     description: {
-        type: String
+        type: String,
+        default: ""
     }
 }, {
     timestamps: true

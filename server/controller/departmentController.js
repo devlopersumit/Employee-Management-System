@@ -1,3 +1,4 @@
+const department = require("../models/department");
 const Department = require("../models/department");
 
 
@@ -6,15 +7,19 @@ const createDepartment = async (req, res) => {
     const { name, code, description } = req.body;
 
     try{
-        const department = await Department.findOne({name});
+        if (!name || !code) {
+      return res.status(400).json({ success: false, message: "Name and code required" });
+      }
 
-        if(department) {
-          return res.status(400).json({message:'Department already exist'});
-        }
+       const exist = await Department.findOne({ $or: [{ name }, { code }] });
+
+       if (exist) { 
+       return res.status(409).json({ success: false, message: "Department name or code already exists" });
+         }
 
         const newDepartment = await Department.create({name, code, description});
         
-        res.status(200).json({
+        res.status(201).json({
             success:true,
             message:'Department Created successfully',
             department: newDepartment
@@ -31,6 +36,26 @@ const getDepartment = async (req, res) => {
         res.status(200).json({departments});
     }catch(err) {
         res.status(500).json({message:err.message});
+    }
+};
+
+//Get Single Department
+const getDepartmentById = async (req, res) => {
+    try{
+        const dept = await Department.findById(req.params.id);
+        if(!dept) {
+            return res.status(404).json({
+                success:false,
+                message:'Department not found'
+            })
+        }
+
+        res.json({success:true, department:dept});
+    }catch(err) {
+        res.status(500).json({
+            success:false,
+            message:"Srver Error" || err.message
+        })
     }
 };
 
@@ -87,6 +112,7 @@ const deleteDepartment = async (req, res) => {
 module.exports = {
     createDepartment,
     getDepartment,
+    getDepartmentById,
     updateDepartment,
     deleteDepartment
 };

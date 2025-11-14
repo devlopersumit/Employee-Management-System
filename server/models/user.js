@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { trim } = require('validator');
+const department = require('./department');
 // const { isEmail, isStrongPassword } = require('validator');
 
 const userSchema = mongoose.Schema({
@@ -11,10 +13,12 @@ const userSchema = mongoose.Schema({
     type:String,
     unique:true,
     lowercase:true,
+    trim:true
     // validate: [ isEmail, 'invalid email' ]
   },
   password:{
     type:String,
+    required:true
     // validate: [isStrongPassword, 'Please Enter strong password']
   },
   role:{
@@ -22,6 +26,11 @@ const userSchema = mongoose.Schema({
     enum: ['ADMIN', 'MANAGER', 'EMPLOYEE'],
     default:'ADMIN'
   },
+  department: {
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Department",
+    default:null
+  }
 }, {
  timestamps: true
 });

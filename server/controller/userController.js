@@ -46,6 +46,26 @@ const getUsers = async (req, res) => {
     }
 };
 
+//Get User by Id
+const getUserById = async (req, res) => {
+    try {
+        const existingUser = await User.findById(req.params.id);
+
+    if(!existingUser) {
+        return res.status(404).json({
+            success:false,
+            message:'User not found'
+        })
+    }
+    res.json({
+        success:true,
+        message:existingUser
+    })
+    } catch (error) {
+        res.status(500).json({message:error.message})
+    }
+};
+
 // Update User
 const updateUser = async (req, res) => {
     const userId = req.params.id;
@@ -93,6 +113,7 @@ const deleteUser = async (req, res) =>{
 module.exports = {
     addUser,
     getUsers,
+    getUserById,
     updateUser,
     deleteUser
 };
