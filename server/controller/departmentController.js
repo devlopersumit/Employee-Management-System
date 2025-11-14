@@ -8,7 +8,7 @@ const createDepartment = async (req, res) => {
     try{
         const department = await Department.findOne({name});
 
-        if(name) {
+        if(department) {
           return res.status(400).json({message:'Department already exist'});
         }
 
