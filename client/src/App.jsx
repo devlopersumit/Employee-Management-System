@@ -3,9 +3,13 @@ import { Route, Routes } from 'react-router-dom'
 import Login from './pages/Login'
 import Home from './pages/Home'
 import ProtectedRoute from './components/ProtectedRoute'
-import AdminDashboard from './pages/AdminDashboard'
 import EmployeeDashboard from './pages/EmployeeDashboard'
 import ManagerDashboard from './pages/ManagerDashboard'
+import DepartmentList from './pages/admin/departments/DepartmentList'
+import AddDepartment from './pages/admin/departments/AddDepartment'
+import UserList from './pages/admin/users/UserList'
+import AddUser from './pages/admin/users/AddUser'
+import Dashboard from './pages/admin/Dashboard'
 
 const App = () => {
   return (
@@ -14,7 +18,13 @@ const App = () => {
       <Route path='/login' element={<Login />} />
 
       {/* Protected Routes */}
-      <Route path='/admin' element={<ProtectedRoute allowedRole='ADMIN'><AdminDashboard /></ProtectedRoute>} />
+      <Route path='/admin' element={<ProtectedRoute allowedRole='ADMIN'><Dashboard /></ProtectedRoute>}>
+        <Route path="departments" element={<DepartmentList />} />
+        <Route path="departments/add" element={<AddDepartment />} />
+
+        <Route path="users" element={<UserList />} />
+        <Route path="users/add" element={<AddUser />} />
+      </Route>
 
       <Route path='/manager' element={<ProtectedRoute allowedRole='MANAGER'><ManagerDashboard /></ProtectedRoute>} />
 

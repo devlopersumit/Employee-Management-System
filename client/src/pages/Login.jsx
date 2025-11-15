@@ -3,11 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { api } from "../api";
 
 function Login() {
-
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -18,20 +16,25 @@ function Login() {
             const res = await api.post('/login', { email, password });
             console.log('response: ', res.data);
 
-            if (!res.data.success) {
-                setError(res.data.message);
+            if (!res.data || !res.data.success) {
+                setError(res.data?.message || 'Login failed');
                 return;
             }
 
-            localStorage.setItem('user', JSON.stringify(res.data));
+            // server returns user under res.data.user
+            const userData = res.data.user || res.data.data || res.data;
+            localStorage.setItem('user', JSON.stringify(userData));
 
-            if (res.data.role === 'ADMIN') navigate('/admin');
-            else if (res.data.role === 'MANAGER') navigate('/manager');
+            if (userData.role === 'ADMIN') navigate('/admin');
+            else if (userData.role === 'MANAGER') navigate('/manager');
             else navigate('/employee');
         } catch (err) {
-            setError(err.message || "Something went wrong");
+            const msg = err.response?.data?.message || err.message || "Something went wrong";
+            setError(msg);
+            console.error('Login error:', err);
         }
     }
+
     return (
         <>
             <div className="flex flex-col justify-center w-full max-w-80 rounded-xl px-6 py-8 border bg-transparent text-black text-sm">
