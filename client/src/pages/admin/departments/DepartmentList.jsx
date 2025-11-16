@@ -14,18 +14,31 @@ const DepartmentList = () => {
   }, []);
 
   const fetchDepartments = async () => {
-    try {
-      const res = await api.get('/departments');
-      if (res.data.success) {
-        setDepartments(res.data.departments || []);
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || 'Error fetching departments');
-      console.error('Error:', err);
-    } finally {
-      setLoading(false);
+  try {
+    const res = await api.get('/departments');
+    console.log('Full response:', res);
+    console.log('Response data:', res.data);
+    
+    // Handle different response structures
+    if (res.data.success) {
+      setDepartments(res.data.departments || []);
+    } else if (res.data.departments) {
+      // If no success field but departments exist
+      setDepartments(res.data.departments);
+    } else if (Array.isArray(res.data)) {
+      // If response is directly an array
+      setDepartments(res.data);
+    } else {
+      console.error('Unexpected response structure:', res.data);
+      setDepartments([]);
     }
-  };
+  } catch (err) {
+    setError(err.response?.data?.message || 'Error fetching departments');
+    console.error('Error:', err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this department?')) {
