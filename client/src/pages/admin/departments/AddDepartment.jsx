@@ -5,9 +5,8 @@ import { api } from '../../../api';
 const AddDepartment = () => {
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
-    manager: '',
-    budget: ''
+    code: '',
+    description: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -27,19 +26,26 @@ const AddDepartment = () => {
     setError('');
     setSuccess('');
 
-    if (!formData.name.trim()) {
-      setError('Department name is required');
+    if (!formData.name.trim() || !formData.code.trim()) {
+      setError('Department name and code are required');
       return;
     }
 
     setLoading(true);
     try {
-      const res = await api.post('/departments', formData);
+      // send only name, code, description to backend
+      const payload = {
+        name: formData.name.trim(),
+        code: formData.code.trim(),
+        description: formData.description.trim()
+      };
+
+      const res = await api.post('/departments', payload);
 
       if (res.data.success) {
         setSuccess('Department created successfully!');
-        setFormData({ name: '', description: '', manager: '', budget: '' });
-        setTimeout(() => navigate('/admin/departments'), 2000);
+        setFormData({ name: '', code: '', description: '' });
+        setTimeout(() => navigate('/admin/departments'), 1500);
       } else {
         setError(res.data.message || 'Failed to create department');
       }
@@ -104,6 +110,23 @@ const AddDepartment = () => {
               />
             </div>
 
+            {/* Department Code */}
+            <div>
+              <label htmlFor="code" className="block text-sm font-semibold text-slate-700 mb-2">
+                Department Code <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="code"
+                name="code"
+                value={formData.code}
+                onChange={handleChange}
+                placeholder="e.g., HR-01"
+                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                required
+              />
+            </div>
+
             {/* Description */}
             <div>
               <label htmlFor="description" className="block text-sm font-semibold text-slate-700 mb-2">
@@ -118,41 +141,6 @@ const AddDepartment = () => {
                 rows="4"
                 className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition resize-none"
               />
-            </div>
-
-            {/* Manager */}
-            <div>
-              <label htmlFor="manager" className="block text-sm font-semibold text-slate-700 mb-2">
-                Department Manager
-              </label>
-              <input
-                type="text"
-                id="manager"
-                name="manager"
-                value={formData.manager}
-                onChange={handleChange}
-                placeholder="Enter manager name or ID"
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-              />
-            </div>
-
-            {/* Budget */}
-            <div>
-              <label htmlFor="budget" className="block text-sm font-semibold text-slate-700 mb-2">
-                Annual Budget
-              </label>
-              <div className="relative">
-                <span className="absolute left-4 top-2.5 text-slate-600">$</span>
-                <input
-                  type="number"
-                  id="budget"
-                  name="budget"
-                  value={formData.budget}
-                  onChange={handleChange}
-                  placeholder="0.00"
-                  className="w-full px-4 py-2.5 pl-7 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-                />
-              </div>
             </div>
 
             {/* Buttons */}
