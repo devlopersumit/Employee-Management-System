@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
     fetchDepartments();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="flex justify-center items-center text-xl">Loading...</p>;
 
   return (
     <div>
